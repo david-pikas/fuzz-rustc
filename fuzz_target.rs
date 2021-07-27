@@ -1,6 +1,8 @@
 #![no_main]
 #[macro_use] extern crate libfuzzer_sys;
 
+extern crate rustsmith;
+
 pub struct FuzzCallbacks;
 
 impl rustc_driver::Callbacks for FuzzCallbacks {
@@ -47,6 +49,8 @@ pub fn main_fuzz(input: String, output_filename: &str) {
               INPUT_PATH.to_string(),
               "-o".to_string(),
               output_filename.to_string(),
+              "-A".to_string(),
+              "warnings".to_string(),
               "--edition".to_string(),
               "2018".to_string(),
               "-L".to_string(),
@@ -58,13 +62,16 @@ pub fn main_fuzz(input: String, output_filename: &str) {
 }
 
 fuzz_target!(|data: &[u8]| {
-    if data.contains(&0x0c) || data.contains(&0x0d) || data.contains(&0x0b) {
-        return;
+    if let Ok(file) = rustsmith::make_program_str(data, true, false, false) {
+        main_fuzz(file, "/tmp/dummy_output_file");
     }
-    if let Ok(t) = String::from_utf8(data.into()) {
-        if let Some(_) = t.find("derive") {
-            return;
-        }
-        main_fuzz(t, "/tmp/dummy_output_file");
-    }
+    // if data.contains(&0x0c) || data.contains(&0x0d) || data.contains(&0x0b) {
+    //     return;
+    // }
+    // if let Ok(t) = String::from_utf8(data.into()) {
+    //     if let Some(_) = t.find("derive") {
+    //         return;
+    //     }
+    //     main_fuzz(t, "/tmp/dummy_output_file");
+    // }
 });

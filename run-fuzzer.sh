@@ -79,5 +79,5 @@ export RUSTC_INSTALL_BINDIR=/tmp/rustc_install_bindir
 
 # The --target flag is important because it prevents build.rs scripts from being built with
 # the above-specified RUSTFLAGS.
-cargo run --release --verbose --target $TARGET --bin "fuzz_target" -- -artifact_prefix=artifacts/ ${@:1} `pwd`/corpus `pwd`/seeds
+cargo run --release --verbose --target $TARGET --bin "fuzz_target" -- -len_control=100000 -max_len=1000000000 -artifact_prefix=artifacts/ ${@:1} `pwd`/corpus `pwd`/seeds
 
