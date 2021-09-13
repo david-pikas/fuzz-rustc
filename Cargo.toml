@@ -18,7 +18,7 @@ path = "./rust/compiler/rustc_span"
 path = "./rust/compiler/rustc_interface"
 
 [dependencies.rustsmith]
-path = "../project/"
+path = "../"
 
 [[bin]]
 name = "fuzz_target"
